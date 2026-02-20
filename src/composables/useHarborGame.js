@@ -1,4 +1,4 @@
-import { computed, reactive } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.prod.js';
+import { computed, reactive } from 'vue';
 import { BERTH_OUTLINE, createStartShipState, GAME_HEIGHT, GAME_WIDTH, HARBOR_WALLS } from '../game/constants.js';
 import { collidesWithWall, createNextShipState, hasEscapedHarbor } from '../game/logic.js';
 
