@@ -17,7 +17,7 @@ export const SHIP_SIZE = Object.freeze({
 export const START_SHIP_STATE = Object.freeze({
   x: BERTH_BOUNDS.left + BERTH_BOUNDS.margin + SHIP_SIZE.width / 2,
   y: BERTH_BOUNDS.top + BERTH_BOUNDS.margin + SHIP_SIZE.length / 2,
-  angle: -Math.PI / 2,
+  angle: 0,
   speed: 0,
   throttle: 0,
 });
