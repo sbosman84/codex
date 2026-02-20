@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
-import { HarborEscapeApp } from './App.js';
+import App from './App.vue';
+import './styles.css';
 
-createApp(HarborEscapeApp).mount('#app');
+createApp(App).mount('#app');

@@ -1,5 +1,12 @@
 import { computed, reactive } from 'vue';
-import { BERTH_OUTLINE, createStartShipState, GAME_HEIGHT, GAME_WIDTH, HARBOR_WALLS } from '../game/constants.js';
+import {
+  BERTH_OUTLINE,
+  createStartShipState,
+  GAME_HEIGHT,
+  GAME_WIDTH,
+  HARBOR_WALLS,
+  SHIP_SIZE,
+} from '../game/constants.js';
 import { collidesWithWall, createNextShipState, hasEscapedHarbor } from '../game/logic.js';
 
 export function useHarborGame() {
@@ -8,6 +15,7 @@ export function useHarborGame() {
     height: GAME_HEIGHT,
     gameState: 'playing',
     shipState: createStartShipState(),
+    shipSize: SHIP_SIZE,
     pressedKeys: new Set(),
     harborWalls: HARBOR_WALLS,
     berthOutline: BERTH_OUTLINE,
@@ -39,7 +47,7 @@ export function useHarborGame() {
 
     const nextShipState = createNextShipState(gameModel.shipState, gameModel.pressedKeys, deltaTime);
 
-    if (collidesWithWall(nextShipState, gameModel.harborWalls)) {
+    if (collidesWithWall(nextShipState, gameModel.shipSize, gameModel.harborWalls)) {
       gameModel.gameState = 'lost';
       return;
     }

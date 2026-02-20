@@ -4,9 +4,9 @@ export function pointInsideWall(x, y, walls) {
   return walls.some((wall) => x >= wall.x && x <= wall.x + wall.w && y >= wall.y && y <= wall.y + wall.h);
 }
 
-export function getShipCorners(shipState) {
-  const halfWidth = 8;
-  const halfLength = 27;
+export function getShipCorners(shipState, shipSize) {
+  const halfWidth = shipSize.width / 2;
+  const halfLength = shipSize.length / 2;
   const cosine = Math.cos(shipState.angle);
   const sine = Math.sin(shipState.angle);
 
@@ -23,8 +23,8 @@ export function getShipCorners(shipState) {
   }));
 }
 
-export function collidesWithWall(shipState, walls) {
-  return getShipCorners(shipState).some((corner) => pointInsideWall(corner.x, corner.y, walls));
+export function collidesWithWall(shipState, shipSize, walls) {
+  return getShipCorners(shipState, shipSize).some((corner) => pointInsideWall(corner.x, corner.y, walls));
 }
 
 export function hasEscapedHarbor(shipState) {
@@ -43,12 +43,12 @@ export function createNextShipState(currentShipState, pressedKeys, deltaTime) {
   }
 
   const targetForwardSpeed = (nextShipState.throttle / 100) * PHYSICS.maxForward;
-  const targetReverseSpeed = (nextShipState.throttle / 40) * -PHYSICS.maxReverse;
+  const targetReverseSpeed = (nextShipState.throttle / 40) * PHYSICS.maxReverse;
 
   if (nextShipState.throttle >= 0) {
     nextShipState.speed += (targetForwardSpeed - nextShipState.speed) * 0.03 * deltaTime;
   } else {
-    nextShipState.speed += (-targetReverseSpeed - nextShipState.speed) * 0.03 * deltaTime;
+    nextShipState.speed += (targetReverseSpeed - nextShipState.speed) * 0.03 * deltaTime;
   }
 
   nextShipState.speed *= Math.pow(PHYSICS.drag, deltaTime);
