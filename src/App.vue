@@ -4,7 +4,7 @@ import GameStatusPanel from './components/GameStatusPanel.vue';
 import HarborGameCanvas from './components/HarborGameCanvas.vue';
 import { useHarborGame } from './composables/useHarborGame.js';
 
-const { gameModel, statusText, resetGame, updateGame } = useHarborGame();
+const { gameModel, hud, statusText, resetGame, adjustThrottle, updateGame } = useHarborGame();
 
 let animationFrameId;
 
@@ -25,8 +25,17 @@ function handleKeydown(event) {
     event.preventDefault();
   }
 
+  if (event.code === 'ArrowUp' && !event.repeat) {
+    adjustThrottle(1);
+  }
+
+  if (event.code === 'ArrowDown' && !event.repeat) {
+    adjustThrottle(-1);
+  }
+
   if (event.code === 'Space' && gameModel.gameState !== 'playing') {
     resetGame();
+    return;
   }
 
   gameModel.pressedKeys.add(event.code);
@@ -52,7 +61,7 @@ onBeforeUnmount(() => {
 <template>
   <main class="game-shell">
     <h1>Harbor Escape</h1>
-    <GameStatusPanel :status-text="statusText" @restart="resetGame" />
+    <GameStatusPanel :status-text="statusText" :hud="hud" @restart="resetGame" />
     <HarborGameCanvas
       :width="gameModel.width"
       :height="gameModel.height"

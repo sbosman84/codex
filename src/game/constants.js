@@ -14,20 +14,29 @@ export const SHIP_SIZE = Object.freeze({
   length: BERTH_BOUNDS.bottom - BERTH_BOUNDS.top - BERTH_BOUNDS.margin * 2,
 });
 
+export const THROTTLE_NOTCHES = Object.freeze([-40, -20, 0, 20, 45, 70, 100]);
+export const NEUTRAL_THROTTLE_INDEX = 2;
+
 export const START_SHIP_STATE = Object.freeze({
   x: BERTH_BOUNDS.left + BERTH_BOUNDS.margin + SHIP_SIZE.width / 2,
   y: BERTH_BOUNDS.top + BERTH_BOUNDS.margin + SHIP_SIZE.length / 2,
   angle: 0,
   speed: 0,
-  throttle: 0,
+  throttle: THROTTLE_NOTCHES[NEUTRAL_THROTTLE_INDEX],
+  throttleIndex: NEUTRAL_THROTTLE_INDEX,
+  rudder: 0,
+  angularVelocity: 0,
 });
 
 export const PHYSICS = Object.freeze({
-  maxForward: 180,
-  maxReverse: 70,
-  throttleStep: 0.95,
-  drag: 0.985,
-  turnRate: 1.7,
+  maxForward: 155,
+  maxReverse: 62,
+  engineResponse: 0.017,
+  waterDrag: 0.992,
+  rudderResponse: 0.12,
+  rudderDecay: 0.9,
+  turnPower: 0.028,
+  angularDamping: 0.93,
 });
 
 export const HARBOR_WALLS = Object.freeze([

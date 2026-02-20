@@ -1,4 +1,4 @@
-import { PHYSICS } from './constants.js';
+import { PHYSICS, THROTTLE_NOTCHES } from './constants.js';
 
 export function pointInsideWall(x, y, walls) {
   return walls.some((wall) => x >= wall.x && x <= wall.x + wall.w && y >= wall.y && y <= wall.y + wall.h);
@@ -31,37 +31,37 @@ export function hasEscapedHarbor(shipState) {
   return shipState.y < 46 && shipState.x > 360 && shipState.x < 825;
 }
 
+export function shiftThrottleNotch(shipState, direction) {
+  const nextState = { ...shipState };
+  const nextIndex = Math.max(0, Math.min(THROTTLE_NOTCHES.length - 1, nextState.throttleIndex + direction));
+
+  nextState.throttleIndex = nextIndex;
+  nextState.throttle = THROTTLE_NOTCHES[nextIndex];
+
+  return nextState;
+}
+
 export function createNextShipState(currentShipState, pressedKeys, deltaTime) {
   const nextShipState = { ...currentShipState };
 
-  if (pressedKeys.has('ArrowUp')) {
-    nextShipState.throttle = Math.min(nextShipState.throttle + PHYSICS.throttleStep * deltaTime, 100);
+  const desiredRudder = pressedKeys.has('ArrowLeft') ? -1 : pressedKeys.has('ArrowRight') ? 1 : 0;
+  nextShipState.rudder += (desiredRudder - nextShipState.rudder) * PHYSICS.rudderResponse * deltaTime;
+  if (!desiredRudder) {
+    nextShipState.rudder *= Math.pow(PHYSICS.rudderDecay, deltaTime);
   }
 
-  if (pressedKeys.has('ArrowDown')) {
-    nextShipState.throttle = Math.max(nextShipState.throttle - PHYSICS.throttleStep * deltaTime, -40);
-  }
+  const targetSpeed =
+    nextShipState.throttle >= 0
+      ? (nextShipState.throttle / 100) * PHYSICS.maxForward
+      : (nextShipState.throttle / 40) * PHYSICS.maxReverse;
 
-  const targetForwardSpeed = (nextShipState.throttle / 100) * PHYSICS.maxForward;
-  const targetReverseSpeed = (nextShipState.throttle / 40) * PHYSICS.maxReverse;
+  nextShipState.speed += (targetSpeed - nextShipState.speed) * PHYSICS.engineResponse * deltaTime;
+  nextShipState.speed *= Math.pow(PHYSICS.waterDrag, deltaTime);
 
-  if (nextShipState.throttle >= 0) {
-    nextShipState.speed += (targetForwardSpeed - nextShipState.speed) * 0.03 * deltaTime;
-  } else {
-    nextShipState.speed += (targetReverseSpeed - nextShipState.speed) * 0.03 * deltaTime;
-  }
-
-  nextShipState.speed *= Math.pow(PHYSICS.drag, deltaTime);
-
-  if (Math.abs(nextShipState.speed) > 2) {
-    if (pressedKeys.has('ArrowLeft')) {
-      nextShipState.angle -= PHYSICS.turnRate * deltaTime * (nextShipState.speed / PHYSICS.maxForward);
-    }
-
-    if (pressedKeys.has('ArrowRight')) {
-      nextShipState.angle += PHYSICS.turnRate * deltaTime * (nextShipState.speed / PHYSICS.maxForward);
-    }
-  }
+  const speedRatio = Math.min(Math.abs(nextShipState.speed) / PHYSICS.maxForward, 1);
+  nextShipState.angularVelocity += nextShipState.rudder * speedRatio * PHYSICS.turnPower * deltaTime;
+  nextShipState.angularVelocity *= Math.pow(PHYSICS.angularDamping, deltaTime);
+  nextShipState.angle += nextShipState.angularVelocity;
 
   nextShipState.x += Math.sin(nextShipState.angle) * nextShipState.speed * deltaTime * 0.018;
   nextShipState.y -= Math.cos(nextShipState.angle) * nextShipState.speed * deltaTime * 0.018;
