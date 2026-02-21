@@ -1,0 +1,301 @@
+:root {
+  font-family: Inter, system-ui, sans-serif;
+  color: #eef4f7;
+  background: #15212a;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: radial-gradient(circle at top, #274154, #12181f 70%); }
+#app { min-height: 100vh; padding: 1rem; }
+
+.app-shell { display: grid; place-items: center; }
+.view { width: min(1100px, 95vw); }
+.card { background: rgba(7, 18, 26, 0.85); border: 1px solid #35617e; border-radius: 10px; padding: 1rem; }
+.centered { display: grid; gap: 0.75rem; justify-items: center; }
+.split { display: grid; grid-template-columns: 1fr 220px; gap: 1rem; align-items: start; }
+.postcard { min-height: 120px; border: 1px dashed #8fb8cc; display: grid; place-items: center; }
+
+.world-layout { display: grid; grid-template-columns: 1fr auto; gap: 0.8rem; }
+.map-panel { grid-column: 1 / 2; }
+.map-svg { width: 100%; border: 1px solid #547f99; }
+.right-menu { display: grid; gap: 0.5rem; align-content: start; }
+.sim-controls { grid-column: 1 / -1; display: grid; gap: 0.5rem; }
+.panel { border: 1px solid #49687c; padding: 0.7rem; border-radius: 8px; }
+.button-grid, .button-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.ship-card { border: 1px solid #3f6073; padding: 0.6rem; margin-top: 0.5rem; }
+
+button { background: #1c9f65; color: white; border: none; padding: 0.45rem 0.75rem; border-radius: 6px; cursor: pointer; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.stop { background: #c04449; }
+
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); display: grid; place-items: center; }
+.modal { background: #102531; border: 1px solid #3e748f; border-radius: 10px; padding: 1rem; width: min(520px, 92vw); }
+
+canvas { width: 100%; border: 2px solid #9bc0d2; }
+
+.world-map-view {
+  width: 100%;
+  min-height: calc(100vh - 2rem);
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  grid-template-rows: 1fr auto;
+  gap: 1rem;
+}
+
+.world-map-area {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  border: 4px solid #3f5668;
+  background: #0c304e;
+}
+
+.world-map-svg {
+  width: 100%;
+  height: 100%;
+  min-height: 68vh;
+  display: block;
+}
+
+.port-marker {
+  cursor: pointer;
+}
+
+.ship-marker {
+  transition: cx 0.4s linear, cy 0.4s linear;
+  animation: shipPulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes shipPulse {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
+}
+
+.world-right-panel {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+}
+
+.world-right-panel button {
+  min-height: 92px;
+  font-size: 1.1rem;
+}
+
+.world-bottom-controls {
+  grid-column: 1 / 3;
+  grid-row: 2 / 3;
+  display: grid;
+  grid-template-columns: 220px 1fr 1fr;
+  gap: 1rem;
+  align-items: center;
+  background: #3b3f46;
+  border: 4px solid #2a2d32;
+  padding: 1rem;
+}
+
+.stop-action-button {
+  min-height: 96px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  background: #ff2f1f;
+}
+
+.speed-control-block {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.speed-control-block label,
+.elapsed-time {
+  color: #f4de71;
+  margin: 0;
+  font-weight: 700;
+}
+
+.poc-globe-screen {
+  width: min(1180px, 98vw);
+  background: #9a9a9a;
+  border: 2px solid #747474;
+  box-shadow: inset 0 0 0 2px #bcbcbc;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  grid-template-rows: auto 520px auto;
+  gap: 10px;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+}
+
+.poc-title-bar {
+  grid-column: 1 / 3;
+  color: #ececec;
+  font-size: 56px;
+  line-height: 1;
+  text-shadow: 4px 4px 0 #2b2b2b;
+  text-transform: lowercase;
+  letter-spacing: 2px;
+}
+
+.poc-map-frame {
+  background: #d0d0d0;
+  border: 3px solid #535353;
+  box-shadow: 5px 5px 0 #3f3f3f;
+  overflow: hidden;
+}
+
+.poc-map-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+}
+
+.poc-port-marker {
+  fill: #fff;
+  stroke: #000;
+  stroke-width: 2;
+  cursor: pointer;
+}
+
+.poc-ship-marker {
+  fill: #0228ff;
+  stroke: #fff;
+  stroke-width: 2;
+  animation: shipPulse 0.7s steps(2, jump-none) infinite;
+  transition: cx 0.25s linear, cy 0.25s linear;
+}
+
+.poc-side-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.poc-nav-button {
+  background: #9f9f9f;
+  color: #ededed;
+  border: 3px solid #303030;
+  box-shadow: inset 0 0 0 2px #bbbbbb;
+  min-height: 160px;
+  font-size: 44px;
+  font-weight: 700;
+  text-shadow: 2px 2px 0 #202020;
+  line-height: 1;
+  border-radius: 0;
+}
+
+.poc-nav-button--active {
+  box-shadow: inset 0 0 0 2px #d7d7d7;
+}
+
+.poc-bottom-strip {
+  grid-column: 1 / 3;
+  display: grid;
+  grid-template-columns: 230px 1fr 240px;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.poc-stop-button {
+  background: #ff2713;
+  border: 3px solid #252525;
+  box-shadow: inset 0 0 0 2px #a50100;
+  color: #fff;
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 2px 2px 0 #262626;
+  border-radius: 0;
+}
+
+.poc-sim-panel {
+  border: 3px solid #555;
+  background: #7b7b7b;
+  box-shadow: inset 0 0 0 2px #b7b7b7;
+  padding: 6px 10px;
+}
+
+.poc-sim-panel h2 {
+  margin: 0 0 6px;
+  color: #efe57e;
+  font-size: 48px;
+  text-shadow: 2px 2px 0 #1f1f1f;
+}
+
+.poc-sim-grid {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  grid-template-rows: auto auto;
+  gap: 8px;
+}
+
+.poc-dial {
+  grid-row: 1 / 3;
+  border: 2px solid #222;
+  background: radial-gradient(circle at center, #111 72%, #333 73%);
+}
+
+.poc-speed-boxes {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.poc-speed-box {
+  background: #121212;
+  border: 2px solid #c5c5c5;
+  text-align: center;
+  font-size: 40px;
+  line-height: 1.2;
+}
+
+.poc-speed-box--active {
+  color: #fff57a;
+}
+
+.poc-time-values {
+  display: grid;
+  grid-template-columns: 90px 1fr 90px auto;
+  align-items: center;
+  gap: 6px;
+  font-size: 50px;
+  line-height: 1;
+}
+
+.poc-time-values span {
+  background: #101010;
+  border: 2px solid #cdcdcd;
+  text-align: center;
+}
+
+.poc-time-values span:nth-child(2),
+.poc-time-values span:nth-child(4) {
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 42px;
+}
+
+.poc-throttle-panel {
+  background: #040404;
+  border: 3px solid #2a2a2a;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 8px;
+}
+
+.poc-speed-slider {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 34px;
+  height: 150px;
+  accent-color: #001ae4;
+}
+
+.poc-throttle-panel p {
+  margin: 0;
+  font-size: 44px;
+  color: #fff;
+}
